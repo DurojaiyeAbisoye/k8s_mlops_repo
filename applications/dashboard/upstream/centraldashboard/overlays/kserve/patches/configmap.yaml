@@ -12,27 +12,20 @@ data:
         "menuLinks": [
             {
                 "icon": "book",
-                "link": "/jupyter/",
-                "text": "Notebooks",
-                "type": "item"
-            },
-            {
-                "icon": "assessment",
-                "link": "/tensorboards/",
-                "text": "TensorBoards",
-                "type": "item"
-            },
-            {
-                "icon": "device:storage",
-                "link": "/volumes/",
-                "text": "Volumes",
-                "type": "item"
-            },
-            {
-                "icon": "kubeflow:katib",
-                "link": "/katib/",
-                "text": "Katib Experiments",
-                "type": "item"
+                "items": [
+                    {
+                        "link": "/workspaces/",
+                        "text": "Workspaces",
+                        "type": "item"
+                    },
+                    {
+                        "link": "/workspaces/workspacekinds/",
+                        "text": "WorkspaceKinds",
+                        "type": "item"
+                    }
+                ],
+                "text": "Notebooks v2",
+                "type": "section"
             },
             {
                 "type": "item",
@@ -97,26 +90,21 @@ data:
                 "text": "Kubeflow Pipelines Documentation"
             },
             {
-                "desc": "Documentation for Kubeflow Notebooks",
-                "link": "https://www.kubeflow.org/docs/components/notebooks/",
-                "text": "Kubeflow Notebooks Documentation"
+                "desc": "Documentation for Kubeflow Workspaces",
+                "link": "https://www.kubeflow.org/docs/components/workspaces/",
+                "text": "Kubeflow Workspaces Documentation"
             },
             {
                 "desc": "Documentation for Kubeflow Training Operator",
                 "link": "https://www.kubeflow.org/docs/components/training/",
                 "text": "Kubeflow Training Operator Documentation"
-            },
-            {
-                "desc": "Documentation for Katib",
-                "link": "https://www.kubeflow.org/docs/components/katib/",
-                "text": "Katib Documentation"
             }
         ],
         "quickLinks": [
             {
-                "desc": "Kubeflow Notebooks",
-                "link": "/jupyter/new",
-                "text": "Create a new Notebook"
+                "desc": "Kubeflow Workspaces",
+                "link": "/workspaces/new",
+                "text": "Create a new Workspace"
             },
             {
                 "desc": "Kubeflow Pipelines",
