@@ -23,6 +23,10 @@ spec:
     kind: ValidatingWebhookConfiguration
     jqPathExpressions:
     - '.webhooks[]?.clientConfig.caBundle'
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+    jsonPointers:
+      - /rules
   syncPolicy:
     automated:
       prune: true
