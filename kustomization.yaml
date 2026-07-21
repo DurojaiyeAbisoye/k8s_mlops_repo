@@ -21,6 +21,7 @@ resources:
   - argocd-apps/pipeline.yaml
   - argocd-apps/profiles.yaml
   - argocd-apps/trainer.yaml
+  - argocd-apps/training-operator.yaml
   - argocd-apps/models-web-app.yaml
   - argocd-apps/mlflow.yaml
   # applications — workspaces (v2 notebook backend)
