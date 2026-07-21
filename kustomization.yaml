@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  # common — infrastructure layer
+  - argocd-apps/istio.yaml
+  - argocd-apps/cert-manager.yaml
+  - argocd-apps/istio-crds.yaml
+  - argocd-apps/knative.yaml
+  - argocd-apps/dex.yaml
+  - argocd-apps/oauth2-proxy.yaml
+  - argocd-apps/kubeflow-ns.yaml
+  - argocd-apps/kubeflow-roles.yaml
+  - argocd-apps/kubeflow-istio-resources.yaml
+  - argocd-apps/user-namespace.yaml
+  - argocd-apps/istio-namespace.yaml
+  # applications — ML platform layer
+  - argocd-apps/admission-webhook.yaml
+  - argocd-apps/central-dashboard.yaml
+  - argocd-apps/kserve.yaml
+  - argocd-apps/pipeline.yaml
+  - argocd-apps/profiles.yaml
+  - argocd-apps/trainer.yaml
+  - argocd-apps/training-operator.yaml
+  - argocd-apps/models-web-app.yaml
+  - argocd-apps/mlflow.yaml
+  # applications — workspaces (v2 notebook backend)
+  - argocd-apps/workspaces-controller.yaml
+  - argocd-apps/workspaces-backend.yaml
+  - argocd-apps/workspaces-frontend.yaml
+  # applications — hub (model registry)
+  - argocd-apps/hub-registry.yaml
+  - argocd-apps/hub-csi.yaml
