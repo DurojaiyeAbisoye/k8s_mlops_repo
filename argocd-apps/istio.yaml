@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo.git
-    targetRevision: main
+    targetRevision: master
     path: common/istio/istio-install/overlays/oauth2-proxy
   ignoreDifferences:
   - group: apiextensions.k8s.io

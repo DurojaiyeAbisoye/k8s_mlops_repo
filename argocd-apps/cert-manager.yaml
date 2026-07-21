@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo.git
-    targetRevision: main
+    targetRevision: master
     path: common/cert-manager/overlays/kubeflow
   ignoreDifferences:
   - group: apiextensions.k8s.io

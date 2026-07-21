@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo.git
-    targetRevision: main
+    targetRevision: master
     path: common/dex/overlays/oauth2-proxy
   destination:
     server: https://kubernetes.default.svc
