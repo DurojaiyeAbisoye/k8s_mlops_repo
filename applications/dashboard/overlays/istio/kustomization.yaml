@@ -2,13 +2,68 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-# We are using the kserve overlay because it is also used in the example installation.
 - ../../upstream/centraldashboard/overlays/kserve
 - ../../upstream/poddefaults-webhooks/overlays/cert-manager
 - ../../upstream/profile-controller/overlays/kubeflow-pss
 
 patches:
-  - path: patches/configmap.yaml
+  - path: patches/configmap-json-patch.yaml
     target:
       kind: ConfigMap
       name: dashboard-config
+      version: v1
+
+replacements:
+  - source:
+      fieldPath: metadata.name
+      kind: Service
+      name: dashboard
+      version: v1
+    targets:
+      - fieldPaths:
+          - spec.http.0.route.0.destination.host
+        options:
+          delimiter: .
+        select:
+          group: networking.istio.io
+          kind: VirtualService
+          name: dashboard
+          version: v1alpha3
+  - source:
+      fieldPath: metadata.namespace
+      kind: Service
+      name: dashboard
+      version: v1
+    targets:
+      - fieldPaths:
+          - spec.http.0.route.0.destination.host
+        options:
+          delimiter: .
+          index: 1
+        select:
+          group: networking.istio.io
+          kind: VirtualService
+          name: dashboard
+          version: v1alpha3
+  - source:
+      fieldPath: metadata.namespace
+      kind: ServiceAccount
+      name: dashboard
+    targets:
+      - fieldPaths:
+          - subjects.[kind=ServiceAccount].namespace
+        select:
+          kind: ClusterRoleBinding
+          name: dashboard
+  - source:
+      kind: Service
+      name: dashboard
+      fieldPath: spec.ports.0.port
+    targets:
+      - fieldPaths:
+          - spec.http.0.route.0.destination.port.number
+        select:
+          group: networking.istio.io
+          kind: VirtualService
+          name: dashboard
+          version: v1alpha3
