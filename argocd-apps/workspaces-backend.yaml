@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: workspaces-backend
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo
+    targetRevision: main
+    path: applications/workspaces/upstream/backend/overlays/istio
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kubeflow-workspaces
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
