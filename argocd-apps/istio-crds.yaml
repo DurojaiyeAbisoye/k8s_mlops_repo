@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo
+    repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo.git
     targetRevision: main
     path: common/istio/istio-crds/base
   destination:
