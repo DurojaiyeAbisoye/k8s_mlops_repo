@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trainer
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/DurojaiyeAbisoye/kubeflow-argocd.git
+    targetRevision: main
+    path: applications/trainer/upstream/overlays/kubeflow-platform
+  ignoreDifferences:
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+    jsonPointers:
+      - /spec/preserveUnknownFields
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: kubeflow-trainer-admin
+    jsonPointers:
+      - /rules
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

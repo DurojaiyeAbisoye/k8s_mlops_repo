@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pipeline
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/DurojaiyeAbisoye/kubeflow-argocd.git
+    targetRevision: main
+    path: applications/pipeline/upstream/env/platform-agnostic-multi-user
+  destination:
+    server: https://kubernetes.default.svc
+  ignoreDifferences:
+  - group: apps
+    kind: StatefulSet
+    name: metacontroller
+    jsonPointers:
+      - /metadata/labels/application-crd-id
+      - /spec/serviceName
+      - /metadata/annotations/argocd.argoproj.io~1tracking-id
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: kubeflow-pipelines-edit
+    jsonPointers:
+      - /rules
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: kubeflow-pipelines-view
+    jsonPointers:
+      - /rules
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

@@ -1,0 +1,155 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+# Install KServe in kubeflow namespace
+- kserve_kubeflow.yaml
+- kserve-cluster-resources.yaml
+
+patches:
+# Fix cert-manager inject-ca-from annotations: kserve_kubeflow.yaml hardcodes
+# "kserve/<cert-name>" in the inject-ca-from annotation on all webhook configs and CRDs,
+# but the Certificate resources live in the "kubeflow" namespace. cert-manager's ca-injector
+# uses this annotation to populate the webhook caBundle, so without this fix TLS verification
+# fails with "certificate signed by unknown authority".
+- patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: kubeflow/serving-cert
+  target:
+    name: "(clusterservingruntime|inferencegraph|inferenceservices?|servingruntime|trainedmodel)\\.serving\\.kserve\\.io"
+- patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: kubeflow/llmisvc-serving-cert
+  target:
+    name: "llminferenceservice(s|config|configs)?\\.serving\\.kserve\\.io"
+- patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1inject-ca-from
+      value: kubeflow/localmodel-serving-cert
+  target:
+    name: "localmodelcache\\.serving\\.kserve\\.io"
+
+# Fix Certificate SANs: kserve_kubeflow.yaml contains a second set of Certificate resources
+# that still reference the upstream kserve namespace instead of kubeflow.
+# These duplicates override the correct kubeflow-scoped ones, causing TLS SAN mismatches
+# on the webhook server. Patch all three to use the correct kubeflow.svc SAN.
+- patch: |
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: serving-cert
+      namespace: kubeflow
+    spec:
+      commonName: kserve-webhook-server-service.kubeflow.svc
+      dnsNames:
+        - kserve-webhook-server-service.kubeflow.svc
+- patch: |
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: llmisvc-serving-cert
+      namespace: kubeflow
+    spec:
+      commonName: llmisvc-webhook-server-service.kubeflow.svc
+      dnsNames:
+        - llmisvc-webhook-server-service.kubeflow.svc
+- patch: |
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: localmodel-serving-cert
+      namespace: kubeflow
+    spec:
+      commonName: localmodel-webhook-server-service.kubeflow.svc
+      dnsNames:
+        - localmodel-webhook-server-service.kubeflow.svc
+
+# Delete the kserve-localmodelnode-agent DaemonSet
+# Runs as privileged: true with hostPID: true and hostNetwork: true
+- patch: |
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: kserve-localmodelnode-agent
+      namespace: kubeflow
+    $patch: delete
+
+# Add seccompProfile: RuntimeDefault to kserve-controller-manager
+- patch: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: kserve-controller-manager
+      namespace: kubeflow
+    spec:
+      template:
+        spec:
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+
+# Add seccompProfile: RuntimeDefault to kserve-localmodel-controller-manager
+- patch: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: kserve-localmodel-controller-manager
+      namespace: kubeflow
+    spec:
+      template:
+        spec:
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+
+# Delete ALL insecure LLMInferenceServiceConfig resources
+# IPC_LOCK, SYS_RAWIO, NET_RAW capabilities, runAsNonRoot: false
+# Ref: https://github.com/kubeflow/community-distribution/issues/3290
+- patch: |
+    apiVersion: serving.kserve.io/v1alpha2
+    kind: LLMInferenceServiceConfig
+    metadata:
+      name: placeholder
+    $patch: delete
+  target:
+    group: serving.kserve.io
+    version: v1alpha2
+    kind: LLMInferenceServiceConfig
+
+# Delete the ValidatingWebhookConfiguration for LLM resources
+# Webhook server (llmisvc-webhook-server-service) is not running — EOF errors
+- patch: |
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+      name: llminferenceserviceconfig.serving.kserve.io
+    $patch: delete
+
+# Enable path-based routing via pathTemplate on the inferenceservice-config ConfigMap.
+# This allows KServe to auto-generate VirtualServices for path-based URLs
+# (/serving/<namespace>/<name>/...), eliminating manual VirtualService creation.
+# Ref: https://github.com/kserve/kserve/issues/2257
+# Ref: https://github.com/kserve/kserve/blob/master/config/configmap/inferenceservice.yaml#L389
+- patch: |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: inferenceservice-config
+      namespace: kubeflow
+    data:
+      ingress: |-
+        {
+          "enableGatewayApi": false,
+          "kserveIngressGateway": "kserve/kserve-ingress-gateway",
+          "ingressGateway": "kubeflow/kubeflow-gateway",
+          "localGateway": "knative-serving/knative-local-gateway",
+          "localGatewayService": "knative-local-gateway.istio-system.svc.cluster.local",
+          "ingressDomain": "example.com",
+          "ingressClassName": "istio",
+          "domainTemplate": "{{ .Name }}-{{ .Namespace }}.{{ .IngressDomain }}",
+          "urlScheme": "http",
+          "disableIstioVirtualHost": false,
+          "disableIngressCreation": false,
+          "pathTemplate": "/serving/{{ .Namespace }}/{{ .Name }}"
+        }
