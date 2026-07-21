@@ -25,8 +25,8 @@ spec:
     - '.webhooks[]?.clientConfig.caBundle'
   - group: rbac.authorization.k8s.io
     kind: ClusterRole
-    jsonPointers:
-      - /rules
+    jqPathExpressions:
+    - '.rules'
   syncPolicy:
     automated:
       prune: true
