@@ -7,7 +7,7 @@ resources:
 - ../../upstream/profile-controller/overlays/kubeflow-pss
 
 patches:
-  - path: patches/configmap-json-patch.yaml
+  - path: patches/configmap.yaml
     target:
       kind: ConfigMap
       name: dashboard-config
