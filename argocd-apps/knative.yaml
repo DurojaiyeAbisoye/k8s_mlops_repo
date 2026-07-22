@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo.git
     targetRevision: master
-    path: common/knative/knative-serving/base
+    path: common/knative/knative-serving/overlays/gateways #common/knative/knative-serving/base
   ignoreDifferences:
   - group: admissionregistration.k8s.io
     kind: MutatingWebhookConfiguration
