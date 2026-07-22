@@ -6,6 +6,7 @@ resources:
   - argocd-apps/istio.yaml
   - argocd-apps/cert-manager.yaml
   - argocd-apps/cert-manager-base.yaml
+  - argocd-apps/cluster-local-gateway.yaml
   - argocd-apps/istio-crds.yaml
   - argocd-apps/knative.yaml
   - argocd-apps/dex.yaml
