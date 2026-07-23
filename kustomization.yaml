@@ -24,6 +24,11 @@ resources:
   - argocd-apps/katib.yaml
   - argocd-apps/prometheus.yaml
   - argocd-apps/grafana.yaml
+  - argocd-apps/jupyter-web-app.yaml
+  - argocd-apps/notebook-controller.yaml
+  - argocd-apps/volumes-web-app.yaml
+  - argocd-apps/tensorboards-web-app.yaml
+  - argocd-apps/pvcviewer-controller.yaml
   - argocd-apps/profiles.yaml
   - argocd-apps/trainer.yaml
   - argocd-apps/training-operator.yaml
