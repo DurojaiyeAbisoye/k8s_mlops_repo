@@ -6,7 +6,6 @@ set -euo pipefail
 
 OPTIONAL_NAMESPACES=(
   kubeflow-workspaces
-  kubeflow-user-example-com
 )
 
 # Delete optional Argo CD Applications if they exist.
