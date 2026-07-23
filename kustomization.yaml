@@ -6,7 +6,8 @@ resources:
   - argocd-apps/istio.yaml
   - argocd-apps/cert-manager.yaml
   - argocd-apps/cert-manager-base.yaml
-  - argocd-apps/cluster-local-gateway.yaml
+  # Optional: disable for a leaner deployment
+  # - argocd-apps/cluster-local-gateway.yaml
   - argocd-apps/istio-crds.yaml
   - argocd-apps/knative.yaml
   - argocd-apps/dex.yaml
@@ -22,8 +23,9 @@ resources:
   - argocd-apps/kserve.yaml
   - argocd-apps/pipeline.yaml
   - argocd-apps/katib.yaml
-  - argocd-apps/prometheus.yaml
-  - argocd-apps/grafana.yaml
+  # Optional monitoring stack; disable for now to reduce overhead
+  # - argocd-apps/prometheus.yaml
+  # - argocd-apps/grafana.yaml
   - argocd-apps/jupyter-web-app.yaml
   - argocd-apps/notebook-controller.yaml
   - argocd-apps/volumes-web-app.yaml
@@ -35,9 +37,11 @@ resources:
   - argocd-apps/models-web-app.yaml
   - argocd-apps/mlflow.yaml
   # applications — workspaces (v2 notebook backend)
-  - argocd-apps/workspaces-controller.yaml
-  - argocd-apps/workspaces-backend.yaml
-  - argocd-apps/workspaces-frontend.yaml
+  # Optional: leave disabled unless you need the newer notebook backend
+  # - argocd-apps/workspaces-controller.yaml
+  # - argocd-apps/workspaces-backend.yaml
+  # - argocd-apps/workspaces-frontend.yaml
   # applications — hub (model registry)
-  - argocd-apps/hub-registry.yaml
-  - argocd-apps/hub-csi.yaml
+  # Optional: leave disabled for a lighter deployment
+  # - argocd-apps/hub-registry.yaml
+  # - argocd-apps/hub-csi.yaml
