@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: katib
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/DurojaiyeAbisoye/k8s_mlops_repo.git
+    targetRevision: master
+    path: applications/katib/upstream/installs/katib-with-kubeflow
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

@@ -21,6 +21,9 @@ resources:
   - argocd-apps/central-dashboard.yaml
   - argocd-apps/kserve.yaml
   - argocd-apps/pipeline.yaml
+  - argocd-apps/katib.yaml
+  - argocd-apps/prometheus.yaml
+  - argocd-apps/grafana.yaml
   - argocd-apps/profiles.yaml
   - argocd-apps/trainer.yaml
   - argocd-apps/training-operator.yaml
