@@ -1,0 +1,130 @@
+# =============================================================================
+# Safety Guardrails for 16GB Single-Node Kubeflow
+# =============================================================================
+# Apply these to every namespace. They enforce tiny defaults and cap total usage.
+# =============================================================================
+
+# --- Apply to all Kubeflow namespaces ---
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: kubeflow
+spec:
+  limits:
+  - default:
+      memory: 256Mi
+      cpu: 500m
+    defaultRequest:
+      memory: 64Mi
+      cpu: 25m
+    type: Container
+
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: kubeflow-quota
+  namespace: kubeflow
+spec:
+  hard:
+    requests.memory: 8Gi
+    limits.memory: 12Gi
+    requests.cpu: "4"
+    limits.cpu: "8"
+    count/pods: "40"
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: kubeflow-user-example-com
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+      cpu: 1000m
+    defaultRequest:
+      memory: 128Mi
+      cpu: 50m
+    type: Container
+
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: user-quota
+  namespace: kubeflow-user-example-com
+spec:
+  hard:
+    requests.memory: 6Gi
+    limits.memory: 10Gi
+    requests.cpu: "4"
+    limits.cpu: "8"
+    count/pods: "8"
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: argocd
+spec:
+  limits:
+  - default:
+      memory: 256Mi
+      cpu: 500m
+    defaultRequest:
+      memory: 64Mi
+      cpu: 25m
+    type: Container
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: istio-system
+spec:
+  limits:
+  - default:
+      memory: 256Mi
+      cpu: 500m
+    defaultRequest:
+      memory: 64Mi
+      cpu: 25m
+    type: Container
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: knative-serving
+spec:
+  limits:
+  - default:
+      memory: 256Mi
+      cpu: 500m
+    defaultRequest:
+      memory: 64Mi
+      cpu: 25m
+    type: Container
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: default-limits
+  namespace: mlflow
+spec:
+  limits:
+  - default:
+      memory: 512Mi
+      cpu: 1000m
+    defaultRequest:
+      memory: 128Mi
+      cpu: 50m
+    type: Container

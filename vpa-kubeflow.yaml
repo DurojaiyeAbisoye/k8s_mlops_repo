@@ -1,0 +1,165 @@
+# =============================================================================
+# VPA (Vertical Pod Autoscaler) Installation for Kubeflow 16GB Node
+# =============================================================================
+# Install VPA first, then apply the VPA objects below to target your workloads.
+# VPA needs 24-48h to build reliable recommendations before you trust it.
+# =============================================================================
+
+# --- Step 1: Install VPA components ---
+# Run this command (requires cluster-admin):
+# kubectl apply -f https://github.com/kubernetes/autoscaler/releases/download/vertical-pod-autoscaler-1.2.0/vpa-v1.2.0.yaml
+# Or use the official deployment:
+# git clone https://github.com/kubernetes/autoscaler.git
+# cd autoscaler/vertical-pod-autoscaler
+# ./hack/vpa-up.sh
+
+# --- Step 2: Apply these VPA objects to auto-adjust Kubeflow resources ---
+# Place these in a file and apply: kubectl apply -f vpa-kubeflow.yaml
+
+# NOTE: For K8s < 1.33, use updateMode: "Recreate" (pods restart when resized)
+# For K8s >= 1.33, use updateMode: "InPlaceOrRecreate" (tries live resize first)
+# Check your version: kubectl version
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-istio
+  namespace: istio-system
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: istiod
+  updatePolicy:
+    updateMode: "Recreate"   # Change to "InPlaceOrRecreate" if K8s >= 1.33
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 50m
+        memory: 128Mi
+      maxAllowed:
+        cpu: 2000m
+        memory: 1Gi
+      controlledResources: ["cpu", "memory"]
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-kfp
+  namespace: kubeflow
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-pipeline
+  updatePolicy:
+    updateMode: "Recreate"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 50m
+        memory: 128Mi
+      maxAllowed:
+        cpu: 2000m
+        memory: 1Gi
+      controlledResources: ["cpu", "memory"]
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-katib
+  namespace: kubeflow
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: katib-controller
+  updatePolicy:
+    updateMode: "Recreate"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 25m
+        memory: 64Mi
+      maxAllowed:
+        cpu: 1000m
+        memory: 512Mi
+      controlledResources: ["cpu", "memory"]
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-kserve
+  namespace: kubeflow
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kserve-controller-manager
+  updatePolicy:
+    updateMode: "Recreate"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 50m
+        memory: 128Mi
+      maxAllowed:
+        cpu: 1000m
+        memory: 512Mi
+      controlledResources: ["cpu", "memory"]
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-argo
+  namespace: argocd
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: argocd-server
+  updatePolicy:
+    updateMode: "Recreate"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 25m
+        memory: 64Mi
+      maxAllowed:
+        cpu: 1000m
+        memory: 512Mi
+      controlledResources: ["cpu", "memory"]
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: vpa-training
+  namespace: kubeflow
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: training-operator
+  updatePolicy:
+    updateMode: "Recreate"
+  resourcePolicy:
+    containerPolicies:
+    - containerName: '*'
+      minAllowed:
+        cpu: 50m
+        memory: 128Mi
+      maxAllowed:
+        cpu: 1000m
+        memory: 512Mi
+      controlledResources: ["cpu", "memory"]
