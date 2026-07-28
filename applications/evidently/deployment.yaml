@@ -26,6 +26,6 @@ spec:
           limits:
             cpu: "500m"
             memory: "1Gi"
-        command: ["evidently", "ui", "--host", "0.0.0.0", "--workspace", "/tmp/workspace", "--demo-projects", "none"]
+        command: ["evidently", "ui", "--host", "0.0.0.0", "--workspace", "/tmp/workspace",]
         ports:
         - containerPort: 8000
