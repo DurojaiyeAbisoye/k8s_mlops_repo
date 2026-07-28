@@ -10,3 +10,5 @@ resources:
 - prometheus-deployment.yaml
 images:
 - name: prom/prometheus
+patchesStrategicMerge:
+- pss-patch.yaml
