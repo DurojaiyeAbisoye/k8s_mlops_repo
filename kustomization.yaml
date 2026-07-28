@@ -29,7 +29,7 @@ resources:
   - argocd-apps/notebook-controller.yaml
   - argocd-apps/volumes-web-app.yaml
   - argocd-apps/tensorboards-web-app.yaml
-  - /argocd-apps/tensorboard-controller.yaml
+  - argocd-apps/tensorboard-controller.yaml
   - argocd-apps/pvcviewer-controller.yaml
   - argocd-apps/profiles.yaml
   - argocd-apps/trainer.yaml
