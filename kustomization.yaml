@@ -36,6 +36,7 @@ resources:
   - argocd-apps/training-operator.yaml
   - argocd-apps/models-web-app.yaml
   - argocd-apps/mlflow.yaml
+  - argocd-apps/evidently.yaml
   # applications — workspaces (v2 notebook backend)
   # Optional: leave disabled unless you need the newer notebook backend
   # - argocd-apps/workspaces-controller.yaml

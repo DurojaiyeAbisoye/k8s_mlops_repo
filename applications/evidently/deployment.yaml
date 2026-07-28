@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: evidently-ui
+  name: evidently-ui
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+  namespace: evidently
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evidently-ui
+  template:
+    metadata:
+      labels:
+        app: evidently-ui
+    spec:
+      containers:
+      - image: abisoye314/evidently-ui:latest
+        imagePullPolicy: IfNotPresent
+        name: evidently-ui
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        command: ["evidently", "ui", "--host", "0.0.0.0", "--workspace", "/tmp/workspace", "--demo-projects", "none"]
+        ports:
+        - containerPort: 8000
