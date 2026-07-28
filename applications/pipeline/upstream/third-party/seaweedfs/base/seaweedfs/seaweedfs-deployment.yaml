@@ -72,7 +72,7 @@ spec:
 
                 # Configure admin user with retries (25s max)
                 for i in $(seq 1 5); do
-                  if echo "s3.configure -user kubeflow-admin -access_key $accesskey -secret_key $secretkey -actions Admin -apply" | /usr/bin/weed shell 2>&1; then
+                  if echo "s3.configure -user kubeflow-admin -access_key $accesskey -secret_key $secretkey -actions Admin,Read,Write,List,Tagging -apply" | /usr/bin/weed shell 2>&1; then
                     break
                   fi
                   if [ "$i" -eq 5 ]; then
