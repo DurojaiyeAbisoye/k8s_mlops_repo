@@ -12,6 +12,41 @@
 #       value:
 #         name: CONTAINER_RUNTIME_ENDPOINT
 #         value: unix:///run/k3s/containerd/containerd.sock
+# apiVersion: kustomize.config.k8s.io/v1beta1
+# kind: Kustomization
+# resources:
+# - ../oauth2-proxy
+# patches:
+# - target:
+#     kind: DaemonSet
+#     name: istio-cni-node
+#   patch: |-
+#     - op: add
+#       path: /spec/template/spec/containers/0/env/-
+#       value:
+#         name: CONTAINER_RUNTIME_ENDPOINT
+#         value: unix:///run/k3s/containerd/containerd.sock
+# - target:
+#     kind: DaemonSet
+#     name: istio-cni-node
+#     namespace: kube-system
+#   patch: |-
+#     apiVersion: apps/v1
+#     kind: DaemonSet
+#     metadata:
+#       name: istio-cni-node
+#       namespace: kube-system
+#     spec:
+#       template:
+#         spec:
+#           volumes:
+#           - name: cni-net-dir
+#             hostPath:
+#               path: /var/lib/rancher/k3s/agent/etc/cni/net.d
+#           - name: cni-bin-dir
+#             hostPath:
+#               path: /var/lib/rancher/k3s/data/current/bin
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
@@ -45,4 +80,4 @@ patches:
               path: /var/lib/rancher/k3s/agent/etc/cni/net.d
           - name: cni-bin-dir
             hostPath:
-              path: /var/lib/rancher/k3s/data/current/bin
+              path: /var/lib/rancher/k3s/data/cni
