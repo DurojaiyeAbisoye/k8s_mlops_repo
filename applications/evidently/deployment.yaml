@@ -18,7 +18,7 @@ spec:
       containers:
       - name: evidently-ui
         image: abisoye314/evidently-ui:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         env:
