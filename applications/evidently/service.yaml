@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: evidently-ui
   name: evidently-ui
   namespace: evidently
+  labels:
+    app: evidently-ui
 spec:
-  ports:
-  - name: 8000-8000
-    port: 8000
-    protocol: TCP
-    targetPort: 8000
+  type: ClusterIP
   selector:
     app: evidently-ui
-  type: ClusterIP
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+    protocol: TCP

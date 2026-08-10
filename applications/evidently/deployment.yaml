@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: evidently-ui
   name: evidently-ui
   namespace: evidently
+  labels:
+    app: evidently-ui
 spec:
   replicas: 1
   selector:
@@ -16,16 +16,28 @@ spec:
         app: evidently-ui
     spec:
       containers:
-      - image: abisoye314/evidently-ui:latest
+      - name: evidently-ui
+        image: abisoye314/evidently-ui:latest
         imagePullPolicy: IfNotPresent
-        name: evidently-ui
+        ports:
+        - containerPort: 8000
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          value: "minio"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "minio123"
+        - name: AWS_ENDPOINT_URL
+          value: "http://seaweedfs.kubeflow.svc.cluster.local:8333"
+        - name: FSSPEC_S3_ENDPOINT_URL
+          value: "http://seaweedfs.kubeflow.svc.cluster.local:8333"
+        - name: FSSPEC_S3_KEY
+          value: "minio"
+        - name: FSSPEC_S3_SECRET
+          value: "minio123"
         resources:
           requests:
             cpu: "50m"
-            memory: "150Mi"
+            memory: "128Mi"
           limits:
             cpu: "500m"
-            memory: "1Gi"
-        command: ["evidently", "ui", "--host", "0.0.0.0", "--workspace", "/tmp/workspace",]
-        ports:
-        - containerPort: 8000
+            memory: "512Mi"
