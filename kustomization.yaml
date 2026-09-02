@@ -22,9 +22,6 @@ resources:
   - argocd-apps/kserve.yaml
   - argocd-apps/pipeline.yaml
   - argocd-apps/katib.yaml
-  # Optional monitoring stack; disable for now to reduce overhead
-  - argocd-apps/prometheus.yaml
-  - argocd-apps/grafana.yaml
   - argocd-apps/jupyter-web-app.yaml
   - argocd-apps/notebook-controller.yaml
   - argocd-apps/volumes-web-app.yaml
